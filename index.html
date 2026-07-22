@@ -1,299 +1,218 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORMO AIR 丰慕航空</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/color/180/airplane-take-off.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/color/96/airplane-take-off.png">
-    <meta name="robots" content="noindex, nofollow">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #070d19; color: #f8fafc; padding-bottom: 70px; }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(7, 13, 25, 0.95); position: fixed; top: 0; width: 100%; z-index: 100; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .logo-text { font-size: 16px; font-weight: 900; letter-spacing: 1px; color: #ffffff; cursor: pointer; }
-        .logo-text span { color: #d4af37; font-size: 12px; margin-left: 4px; }
-        .nav-links { display: flex; gap: 4px; align-items: center; }
-        .nav-btn { background: transparent; border: none; color: #94a3b8; font-size: 12px; font-weight: 600; padding: 5px 7px; cursor: pointer; border-radius: 6px; }
-        .nav-btn.active { color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
-        .admin-btn { border: 1px solid #d4af37; color: #d4af37; padding: 3px 8px; border-radius: 14px; font-size: 11px; }
-        .page { display: none; margin-top: 60px; padding: 15px; animation: fadeIn 0.3s ease; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .hero { background: linear-gradient(180deg, rgba(7, 13, 25, 0.4) 0%, #070d19 100%), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1000') center/cover; padding: 30px 15px; text-align: center; border-radius: 16px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .hero h1 { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 2px; }
-        .hero p { color: #38bdf8; font-size: 12px; margin-top: 4px; }
-        .card { background: #0f172a; border-radius: 14px; padding: 16px; margin-bottom: 15px; border: 1px solid #1e293b; }
-        .card h3 { color: #38bdf8; font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-        .livery-tag { display: inline-block; background: rgba(236, 72, 153, 0.15); color: #f472b6; font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid rgba(236, 72, 153, 0.3); margin-top: 3px; }
-        .livery-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
-        .livery-silver { background: rgba(212, 175, 55, 0.15); color: #e2e8f0; border: 1px solid #d4af37; }
-        .hub-select-group { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
-        .hub-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 6px 12px; border-radius: 18px; font-size: 11px; white-space: nowrap; cursor: pointer; }
-        .hub-btn.active { background: #38bdf8; color: #070d19; font-weight: bold; border-color: #38bdf8; }
-        .route-region-title { font-weight: bold; font-size: 12px; color: #d4af37; margin: 12px 0 6px 0; padding-bottom: 3px; border-bottom: 1px dashed #334155; }
-        .route-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #1e293b; font-size: 12px; }
-        .route-item:last-child { border-bottom: none; }
-        .route-dest { font-weight: 500; color: #f8fafc; }
-        .route-plane { color: #38bdf8; font-family: monospace; font-size: 11px; background: rgba(56, 189, 248, 0.08); padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; background: #070d19; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 12px; outline: none; }
-        .pax-counter-group { background: #070d19; border: 1px solid #334155; border-radius: 8px; padding: 10px; }
-        .pax-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #1e293b; }
-        .pax-row:last-child { border-bottom: none; }
-        .pax-title { font-size: 12px; color: #f8fafc; }
-        .pax-desc { font-size: 10px; color: #64748b; }
-        .counter-btn-group { display: flex; align-items: center; gap: 8px; }
-        .btn-counter { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.1); color: #38bdf8; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-        .pax-num { font-size: 13px; font-weight: bold; width: 16px; text-align: center; color: #fff; }
-        .plan-card { background: #070d19; border: 1px solid #334155; border-radius: 10px; padding: 12px; margin-top: 8px; }
-        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .plan-name { font-weight: bold; color: #d4af37; font-size: 13px; }
-        .plan-tag { font-size: 10px; background: #1e293b; color: #94a3b8; padding: 2px 6px; border-radius: 4px; }
-        .plan-detail { font-size: 11px; color: #94a3b8; line-height: 1.5; }
-        .plan-detail li { margin-left: 14px; margin-bottom: 2px; }
-        .btn-primary { width: 100%; padding: 12px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 13, 25, 0.95); z-index: 200; justify-content: center; align-items: center; }
-        .modal-content { background: #0f172a; padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; border: 1px solid #1e293b; max-height: 85vh; overflow-y: auto; }
-    </style>
-</head>
-<body>
-    <nav>
-        <div class="logo-text" onclick="switchPage('home')">FORMO AIR <span>丰慕航空</span></div>
-        <div class="nav-links">
-            <button class="nav-btn active" id="btn-home" onclick="switchPage('home')">首頁</button>
-            <button class="nav-btn" id="btn-routes" onclick="switchPage('routes')">航網</button>
-            <button class="nav-btn" id="btn-service" onclick="switchPage('service')">服務</button>
-            <button class="nav-btn" id="btn-booking" onclick="switchPage('booking')">訂票</button>
-            <button class="nav-btn admin-btn" onclick="openAdmin()">內部</button>
-        </div>
-    </nav>
+<script>
+    const PASSWORD = "formo2026";
+    let paxCount = { adult: 1, child: 0, infant: 0 };
+    let selectedPlan = "";
 
-    <div id="page-home" class="page active">
-        <div class="hero">
-            <h1>FORMO AIR</h1>
-            <p>丰慕航空 ‧ 探索全球無限航點</p>
-        </div>
-        <div class="card">
-            <h3>✨ 主題彩繪與特化塗裝機隊</h3>
-            <div style="margin-bottom: 10px;">
-                <strong style="font-size:12px; color:#fff;">台北桃園 ↔ 倫敦希斯洛</strong><br>
-                <span class="livery-tag livery-silver">B777-300ER 賓士「銀箭天穹」彩繪機</span>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <strong style="font-size:12px; color:#fff;">台北桃園 ↔ 東京羽田</strong><br>
-                <span class="livery-tag">A321-XLR 酷洛米「午夜惡作劇」彩繪機</span>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <strong style="font-size:12px; color:#fff;">台北桃園 ↔ 大阪關西</strong><br>
-                <span class="livery-tag">A330-300 酷洛米 20 週年「星空姊妹號」彩繪機</span>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <strong style="font-size:12px; color:#fff;">台北桃園 ↔ 達拉斯沃斯堡</strong><br>
-                <span class="livery-tag livery-blue">B777-9X 藍色監獄主題塗裝</span>
-            </div>
-            <div>
-                <strong style="font-size:12px; color:#fff;">台北桃園 ↔ 費城</strong><br>
-                <span class="livery-tag livery-blue">A350-900 足球小將翼主題塗裝</span>
-            </div>
-        </div>
-        <div class="card" onclick="switchPage('routes')" style="cursor:pointer; background: linear-gradient(135deg, #0f172a, #1e293b);">
-            <h3 style="color:#d4af37;">🌐 完整全球航網圖鑑</h3>
-            <p style="font-size:11px; color:#94a3b8;">點擊查看 TPE、RMQ、BOS、LAX 四大樞紐航線 ➔</p>
-        </div>
-    </div>
+    const routesData = {
+        tpe: {
+            title: "台北桃園 (TPE) 樞紐 - 全航點",
+            routes: [
+                { region: "亞洲 - 東亞", items: [
+                    { d: "中國：上海浦東", p: "B737-100" }, { d: "中國：北京首都", p: "B737-100" }, { d: "中國：南京", p: "B737-100" },
+                    { d: "香港", p: "A321-XLR" }, { d: "澳門", p: "A321-XLR" },
+                    { d: "韓國：首爾仁川", p: "A321-200" }, { d: "韓國：釜山金海", p: "A321-XLR" }, { d: "韓國：濟州", p: "A318-100" },
+                    { d: "日本：東京成田", p: "A330-300" }, { d: "日本：東京羽田 (酷洛米午夜惡作劇)", p: "A321-XLR" },
+                    { d: "日本：名古屋中部", p: "A330-300" }, { d: "日本：關西 (酷洛米20週年星空姊妹號)", p: "A330-300" },
+                    { d: "日本：札幌新千歲", p: "A350-900" }, { d: "日本：函館", p: "A320-200" }, { d: "日本：福岡", p: "A320-200" },
+                    { d: "日本：鹿兒島", p: "A320-200" }, { d: "日本：松山", p: "A321-200" }, { d: "日本：沖繩那霸", p: "A320-200" }
+                ]},
+                { region: "亞洲 - 東南亞 / 南亞 / 中東", items: [
+                    { d: "菲律賓：馬尼拉", p: "A321-XLR" }, { d: "菲律賓：宿霧", p: "A321-XLR" },
+                    { d: "泰國：曼谷蘇凡納布", p: "A320-200" }, { d: "泰國：普吉島", p: "A320-NEO" },
+                    { d: "越南：胡志明市", p: "A321-XLR" }, { d: "越南：峴港", p: "A320-200" }, { d: "越南：河內", p: "A320-200" }, { d: "越南：富國島", p: "A320-200" },
+                    { d: "馬來西亞：吉隆坡", p: "A320-200" }, { d: "馬來西亞：檳城", p: "A320-200" },
+                    { d: "新加坡", p: "A330-900neo" }, { d: "印尼：雅加達", p: "A330-900neo" }, { d: "印尼：巴厘島", p: "A320-200" },
+                    { d: "馬爾地夫：馬累", p: "A220-100" }, { d: "阿聯：杜拜 (暫停/借飛米蘭)", p: "A350-900" }
+                ]},
+                { region: "大洋洲", items: [
+                    { d: "帛琉", p: "A318-100" }, { d: "關島", p: "A330-900neo" },
+                    { d: "澳洲：雪梨", p: "A330-300" }, { d: "澳洲：墨爾本", p: "A350-900" },
+                    { d: "紐西蘭：奧克蘭", p: "A340-500" }, { d: "夏威夷：檀香山 (丹尼爾·K·井上)", p: "A350-900" }
+                ]},
+                { region: "非洲", items: [
+                    { d: "埃及：開羅", p: "A350-900" }, { d: "南非：約翰尼斯堡", p: "B777-9X" }
+                ]},
+                { region: "歐洲", items: [
+                    { d: "荷蘭：阿姆斯特丹史基浦", p: "A350-1000" }, { d: "英國：倫敦希斯洛 (賓士銀箭天穹彩繪機)", p: "B777-300ER" }, { d: "英國：利物浦 (經香港)", p: "DC-8-72" },
+                    { d: "法國：巴黎戴高樂", p: "A330-300" }, { d: "德國：慕尼黑", p: "A330-300" }, { d: "德國：法蘭克福", p: "A350-1000" },
+                    { d: "捷克：布拉格", p: "B787-9" }, { d: "波蘭：華沙蕭邦", p: "A350-900" }, { d: "芬蘭：赫爾辛基萬塔", p: "A350-900" },
+                    { d: "瑞典：斯德哥爾摩阿蘭達", p: "A350-900" }, { d: "冰島：雷克雅維克-凱夫拉維克", p: "B787-9" }, { d: "義大利：羅馬-菲烏米奇諾", p: "A350-900" }
+                ]},
+                { region: "美洲", items: [
+                    { d: "美國：波士頓", p: "A350-1000" }, { d: "美國：亞特蘭大", p: "B777-9X" }, { d: "美國：西雅圖塔科馬", p: "B777-300ER" },
+                    { d: "美國：舊金山 (經成田)", p: "A380-800" }, { d: "美國：洛杉磯", p: "A350-1000" }, { d: "美國：安克拉治", p: "A350-900" },
+                    { d: "美國：達拉斯沃斯堡 (藍色監獄塗裝)", p: "B777-9X" }, { d: "美國：休士頓喬治布希", p: "A350-900" },
+                    { d: "美國：費城 (足球小將翼塗裝)", p: "A350-900" }, { d: "加拿大：溫哥華", p: "B777-300ER" },
+                    { d: "加拿大：多倫多皮爾遜", p: "A350-1000" }, { d: "墨西哥：墨西哥城", p: "B787-8" }
+                ]}
+            ]
+        },
+        rmq: {
+            title: "台中 (RMQ) 樞紐 - 全航點",
+            routes: [
+                { region: "亞洲", items: [{ d: "日本：東京羽田", p: "A321-XLR" }] }
+            ]
+        },
+        bos: {
+            title: "波士頓 (BOS) 樞紐 - 全航點",
+            routes: [
+                { region: "美洲", items: [
+                    { d: "美國：紐約紐華克", p: "A220-100" }, { d: "美國：邁阿密", p: "A220-300" }, { d: "美國：亞特蘭大", p: "A320-200" },
+                    { d: "美國：芝加哥歐海爾", p: "A220-300" }, { d: "美國：洛杉磯", p: "A320-200" }, { d: "美國：安克拉治", p: "A320-200" },
+                    { d: "加拿大：多倫多皮爾遜", p: "A220-100" }, { d: "阿魯巴", p: "A321-XLR" }
+                ]},
+                { region: "歐洲", items: [
+                    { d: "荷蘭：阿姆斯特丹史基浦", p: "A320-200" }, { d: "法國：巴黎戴高樂", p: "A330-900neo" }, { d: "德國：法蘭克福", p: "A321-XLR" },
+                    { d: "捷克：布拉格", p: "A321-XLR" }, { d: "芬蘭：赫爾辛基萬塔", p: "B737-800" }, { d: "瑞典：斯德哥爾摩阿蘭達", p: "A330-300" },
+                    { d: "冰島：雷克雅維克-凱夫拉維克", p: "A320-200" }, { d: "西班牙：馬德里", p: "A330-900neo" }
+                ]},
+                { region: "非洲 / 亞洲 / 大洋洲", items: [
+                    { d: "埃及：開羅 (經阿姆斯特丹)", p: "A330-300" }, { d: "南非：約翰尼斯堡", p: "B777-9X" }, { d: "衣索比亞：阿迪斯阿貝巴", p: "A350-900" },
+                    { d: "台灣：台北桃園", p: "A350-1000" }, { d: "日本：東京成田", p: "A350-1000" }, { d: "日本：關西", p: "B787-8" },
+                    { d: "泰國：曼谷蘇凡納布 (經阿姆斯特丹)", p: "B787-8" }, { d: "新加坡", p: "A350-900ULR" }, { d: "香港", p: "B777-9X" },
+                    { d: "阿聯：杜拜 (暫停/借飛倫敦)", p: "B777-300ER" }, { d: "澳洲：雪梨", p: "A350-900ULR" },
+                    { d: "澳洲：墨爾本 (經杜拜)", p: "B777-9X" }, { d: "紐西蘭：奧克蘭", p: "A350-900ULR" }
+                ]}
+            ]
+        },
+        lax: {
+            title: "洛杉磯 (LAX) 樞紐 - 全航點",
+            routes: [
+                { region: "美洲", items: [
+                    { d: "美國：紐約甘迺迪", p: "A330-300" }, { d: "美國：波士頓", p: "A220-200" }
+                ]},
+                { region: "亞洲 / 歐洲 / 大洋洲", items: [
+                    { d: "台灣：台北桃園", p: "A350-1000" }, { d: "英國：倫敦希斯洛", p: "A380-800" },
+                    { d: "法國：巴黎戴高樂", p: "B747-8" }, { d: "澳洲：雪梨", p: "B777-300ER" }
+                ]}
+            ]
+        }
+    };
 
-    <div id="page-routes" class="page">
-        <h2 style="font-size:16px; margin-bottom: 10px; color:#38bdf8;">全球基地航網與機隊配置</h2>
-        <div class="hub-select-group">
-            <button class="hub-btn active" onclick="filterHub('tpe', this)">台北桃園 (TPE)</button>
-            <button class="hub-btn" onclick="filterHub('rmq', this)">台中 (RMQ)</button>
-            <button class="hub-btn" onclick="filterHub('bos', this)">波士頓 (BOS)</button>
-            <button class="hub-btn" onclick="filterHub('lax', this)">洛杉磯 (LAX)</button>
-        </div>
-        <div id="hub-content" class="card"></div>
-    </div>
+    const fareData = {
+        economy: [
+            { id: "e1", name: "① 輕盈飛 (Economy Light)", tag: "背包客 / 短程輕裝", details: ["托運行李：1 件 / 23 公斤 (手提 7kg)", "座位選擇：起飛前 48 小時免費自動配座", "退改簽：不可退票，改簽高額手續費", "哩程累積：25% 丰慕哩程"] },
+            { id: "e2", name: "② 標準飛 (Economy Classic)", tag: "觀光客 / 家庭首選", details: ["托運行李：2 件 / 各 23 公斤 (手提 7kg)", "座位選擇：免費預先選標準座", "退改簽：允許付費改簽與退票", "哩程累積：75% 丰慕哩程"] },
+            { id: "e3", name: "③ 尊享飛 (Economy Flex)", tag: "高彈性 / 商務出差", details: ["托運行李：2 件 / 各 23 公斤 (手提 10kg)", "座位選擇：全區免費預先選位 (含前排)", "退改簽：免費無限次改簽，微量退票費", "優先權益：優先登機 (Priority Boarding)", "哩程累積：100% 丰慕哩程"] }
+        ],
+        business: [
+            { id: "b1", name: "① 輕奢商務 (Business Basic)", tag: "平躺體驗首選", details: ["托運行李：2 件 / 各 32 公斤 (手提 2 件共 15kg)", "機場權益：優先報到、優先行李、貴賓室體驗", "退改簽：改簽與退票需收取手續費", "接駁服務：不含免費專車接駁", "哩程累積：125% 丰慕哩程"] },
+            { id: "b2", name: "② 精品商務 (Business Classic)", tag: "高階主管 / 長途高端", details: ["托運行李：2 件 / 各 32 公斤 (手提 2 件共 15kg)", "機場權益：快速通關禮遇、貴賓室全設施體驗", "座位選擇：免費選擇全區商務艙 (含包廂)", "接駁服務：享 TPE/LAX/BOS 單程 Benz V-Class/S-Class 專車接送", "哩程累積：175% 丰慕哩程"] }
+        ],
+        first: [
+            { id: "f1", name: "① 皇家頭等套房 (First Suite)", tag: "VVIP 奢華隱私", details: ["托運行李：3 件 / 各 32 公斤 (手提 2 件共 20kg)", "機場權益：1對1專員陪同通關、頭等艙專屬貴賓室", "接駁服務：享 TPE/LAX/BOS 雙向 Maybach S-Class 專車接送", "退改簽：微量手續費改簽", "哩程累積：200% 丰慕哩程"] },
+            { id: "f2", name: "② 帝王天穹套房 (First Prime / Imperial)", tag: "頂級富豪 / 零限制", details: ["托運行李：不限件數 / 總重 120 公斤", "機場權益：Maybach 機坪直達接送、獨立通關、頭等貴賓室包廂", "接駁服務：享 全球雙向 Maybach S-Class 點到點全程接送", "退改簽：完全無條件免費退改簽", "哩程累積：300% 丰慕哩程"] }
+        ]
+    };
 
-    <div id="page-service" class="page">
-        <div class="card">
-            <h3 style="color:#d4af37;">🚗 門到門專車禮賓接送</h3>
-            <p style="font-size:11px; color:#94a3b8; margin-bottom:10px;">於 台北桃園 (TPE)、洛杉磯 (LAX)、波士頓 (BOS) 三大樞紐提供頂級陸地接送服務：</p>
-            <div style="font-size:12px; color:#cbd5e1; line-height:1.6;">
-                • <strong>頭等艙禮賓接送：</strong> 全球雙向配備 Mercedes-Maybach S-Class 頂級旗艦轎車。<br>
-                • <strong>商務艙專車接送：</strong> 精品商務方案享有單程 Mercedes-Benz V-Class / S-Class 禮賓車接送服務。
-            </div>
-        </div>
-        <div class="card">
-            <h3>🍸 丰慕機場尊榮貴賓室</h3>
-            <div style="font-size:12px; color:#cbd5e1; line-height:1.6;">
-                • <strong>頭等艙專屬貴賓室：</strong> 提供一對一專員服務、頂級獨立包廂、米其林星級主廚即點即做佳餚與停機坪 Maybach 直達接送。<br>
-                • <strong>商務艙及高等會員貴賓室：</strong> 設有全音響調音休息區、淋浴間、現做單點美食酒吧與頂級 Spa 設施。<br>
-                • <strong>一般旅客休息室：</strong> 提供舒適休憩沙發區、高速 Wi-Fi、精緻冷熱自助餐點與飲料無限供應。
-            </div>
-        </div>
-    </div>
+    function switchPage(pageName) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        const targetPage = document.getElementById('page-' + pageName);
+        const targetBtn = document.getElementById('btn-' + pageName);
+        
+        if (targetPage) targetPage.classList.add('active');
+        if (targetBtn) targetBtn.classList.add('active');
 
-    <div id="page-booking" class="page">
-        <div class="card">
-            <h2 style="font-size:16px; margin-bottom: 12px; color:#38bdf8; text-align:center;">預訂你的 丰慕航空 航班</h2>
-            <div class="form-group">
-                <label>出發地樞紐</label>
-                <select id="book-origin" onchange="updateDestinations()">
-                    <option value="TPE">台北桃園 (TPE)</option>
-                    <option value="RMQ">台中 (RMQ)</option>
-                    <option value="BOS">波士頓 (BOS)</option>
-                    <option value="LAX">洛杉磯 (LAX)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>目的地 (顯示執飛機型)</label>
-                <select id="book-dest"></select>
-            </div>
-            <div class="form-group">
-                <label>搭乘人數</label>
-                <div class="pax-counter-group">
-                    <div class="pax-row">
-                        <div>
-                            <div class="pax-title">成人</div>
-                            <div class="pax-desc">12 歲及以上</div>
-                        </div>
-                        <div class="counter-btn-group">
-                            <button class="btn-counter" onclick="changePax('adult', -1)">-</button>
-                            <span class="pax-num" id="num-adult">1</span>
-                            <button class="btn-counter" onclick="changePax('adult', 1)">+</button>
-                        </div>
+        if(pageName === 'routes') filterHub('tpe');
+        if(pageName === 'booking') { updateDestinations(); renderFarePlans(); }
+        window.scrollTo(0,0);
+    }
+
+    function filterHub(hubKey, btn) {
+        if(btn) {
+            document.querySelectorAll('.hub-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        const hub = routesData[hubKey];
+        if(!hub) return;
+        let html = `<h3 style="color:#d4af37; margin-bottom:8px;">${hub.title}</h3>`;
+        hub.routes.forEach(r => {
+            html += `<div class="route-region-title">${r.region}</div>`;
+            r.items.forEach(item => {
+                html += `<div class="route-item"><span class="route-dest">${item.d}</span><span class="route-plane">${item.p}</span></div>`;
+            });
+        });
+        document.getElementById('hub-content').innerHTML = html;
+    }
+
+    function updateDestinations() {
+        const originEl = document.getElementById('book-origin');
+        if (!originEl) return;
+        const origin = originEl.value.toLowerCase();
+        const select = document.getElementById('book-dest');
+        if (!select) return;
+        select.innerHTML = '';
+        const hub = routesData[origin];
+        if (!hub) return;
+        hub.routes.forEach(r => {
+            r.items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.d;
+                opt.textContent = `${item.d} (${item.p})`;
+                select.appendChild(opt);
+            });
+        });
+    }
+
+    function changePax(type, delta) {
+        if (type === 'adult' && paxCount.adult + delta < 1) return;
+        if (paxCount[type] + delta < 0) return;
+        paxCount[type] += delta;
+        const el = document.getElementById(`num-${type}`);
+        if (el) el.innerText = paxCount[type];
+    }
+
+    function renderFarePlans() {
+        const cabinEl = document.getElementById('book-cabin');
+        if (!cabinEl) return;
+        const cabin = cabinEl.value;
+        const plans = fareData[cabin];
+        const container = document.getElementById('fare-plans-container');
+        if (!container || !plans) return;
+        container.innerHTML = "";
+        selectedPlan = plans[0].name;
+
+        plans.forEach((plan, index) => {
+            const checked = index === 0 ? "checked" : "";
+            let detailHtml = plan.details.map(d => `<li>${d}</li>`).join("");
+            container.innerHTML += `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                            <input type="radio" name="farePlan" value="${plan.name}" ${checked} onchange="selectedPlan='${plan.name}'">
+                            <span class="plan-name">${plan.name}</span>
+                        </label>
+                        <span class="plan-tag">${plan.tag}</span>
                     </div>
-                    <div class="pax-row">
-                        <div>
-                            <div class="pax-title">兒童</div>
-                            <div class="pax-desc">3 - 12 歲</div>
-                        </div>
-                        <div class="counter-btn-group">
-                            <button class="btn-counter" onclick="changePax('child', -1)">-</button>
-                            <span class="pax-num" id="num-child">0</span>
-                            <button class="btn-counter" onclick="changePax('child', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="pax-row">
-                        <div>
-                            <div class="pax-title">嬰兒</div>
-                            <div class="pax-desc">0 - 3 歲</div>
-                        </div>
-                        <div class="counter-btn-group">
-                            <button class="btn-counter" onclick="changePax('infant', -1)">-</button>
-                            <span class="pax-num" id="num-infant">0</span>
-                            <button class="btn-counter" onclick="changePax('infant', 1)">+</button>
-                        </div>
-                    </div>
+                    <ul class="plan-detail">${detailHtml}</ul>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>搭乘艙等</label>
-                <select id="book-cabin" onchange="renderFarePlans()">
-                    <option value="economy">經濟艙 (Economy Class)</option>
-                    <option value="business">商務艙 (Business Class)</option>
-                    <option value="first">頭等艙 (First Class)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>選擇購票方案</label>
-                <div id="fare-plans-container"></div>
-            </div>
-            <button class="btn-primary" onclick="confirmBooking()">確認預約航班</button>
-        </div>
-    </div>
+            `;
+        });
+    }
 
-    <div class="modal" id="adminModal">
-        <div class="modal-content" style="text-align: center;">
-            <h3 style="margin-bottom: 12px; color:#38bdf8;">FORMO AIR 控制台驗證</h3>
-            <input type="password" id="adminPass" placeholder="輸入密碼" style="width:100%; padding:10px; margin-bottom:12px; background:#070d19; border:1px solid #334155; color:#fff; border-radius:8px; text-align:center;">
-            <button onclick="loginAdmin()" class="btn-primary">進入控制面板</button>
-            <button onclick="closeAdmin()" style="width:100%; padding:8px; background:transparent; border:none; color:#94a3b8; margin-top:8px;">取消</button>
-        </div>
-    </div>
+    function confirmBooking() {
+        const totalPax = paxCount.adult + paxCount.child + paxCount.infant;
+        const destEl = document.getElementById('book-dest');
+        const dest = destEl ? destEl.value : "";
+        alert(`✈️ 預約成功！\n目的地：${dest}\n總乘客人數：${totalPax} 位 (成人 ${paxCount.adult} / 兒童 ${paxCount.child} / 嬰兒 ${paxCount.infant})\n選擇方案：${selectedPlan}\n\nFORMO AIR 丰慕航空期待為您服務！`);
+    }
 
-    <div class="modal" id="dashboardModal">
-        <div class="modal-content">
-            <h3 style="color:#d4af37; margin-bottom: 10px;">FORMO AIR 機隊與營運狀態</h3>
-            <div style="font-size:12px; color:#cbd5e1; line-height:1.6; background:#070d19; padding:12px; border-radius:8px; margin-bottom:12px;">
-                ⚠️ <strong>特殊航線調度狀態：</strong><br>
-                • 杜拜 ➔ 台北桃園（A350-900）：暫時停航，機隊借飛米蘭。<br>
-                • 杜拜 ➔ 波士頓（B777-300ER）：暫時停航，機隊借飛倫敦。
-            </div>
-            <button onclick="closeDashboard()" class="btn-primary" style="background:#334155;">關閉面板</button>
-        </div>
-    </div>
+    function openAdmin() { document.getElementById('adminModal').style.display = 'flex'; }
+    function closeAdmin() { document.getElementById('adminModal').style.display = 'none'; }
+    function loginAdmin() {
+        if(document.getElementById('adminPass').value === PASSWORD) {
+            closeAdmin();
+            document.getElementById('dashboardModal').style.display = 'flex';
+        } else { alert('密碼錯誤！'); }
+    }
+    function closeDashboard() { document.getElementById('dashboardModal').style.display = 'none'; }
 
-    <script>
-        const PASSWORD = "formo2026";
-        let paxCount = { adult: 1, child: 0, infant: 0 };
-        let selectedPlan = "";
-
-        const routesData = {
-            tpe: {
-                title: "台北桃園 (TPE) 樞紐 - 全航點",
-                routes: [
-                    { region: "亞洲 - 東亞", items: [
-                        { d: "中國：上海浦東", p: "B737-100" }, { d: "中國：北京首都", p: "B737-100" }, { d: "中國：南京", p: "B737-100" },
-                        { d: "香港", p: "A321-XLR" }, { d: "澳門", p: "A321-XLR" },
-                        { d: "韓國：首爾仁川", p: "A321-200" }, { d: "韓國：釜山金海", p: "A321-XLR" }, { d: "韓國：濟州", p: "A318-100" },
-                        { d: "日本：東京成田", p: "A330-300" }, { d: "日本：東京羽田 (酷洛米午夜惡作劇)", p: "A321-XLR" },
-                        { d: "日本：名古屋中部", p: "A330-300" }, { d: "日本：關西 (酷洛米20週年星空姊妹號)", p: "A330-300" },
-                        { d: "日本：札幌新千歲", p: "A350-900" }, { d: "日本：函館", p: "A320-200" }, { d: "日本：福岡", p: "A320-200" },
-                        { d: "日本：鹿兒島", p: "A320-200" }, { d: "日本：松山", p: "A321-200" }, { d: "日本：沖繩那霸", p: "A320-200" }
-                    ]},
-                    { region: "亞洲 - 東南亞 / 南亞 / 中東", items: [
-                        { d: "菲律賓：馬尼拉", p: "A321-XLR" }, { d: "菲律賓：宿霧", p: "A321-XLR" },
-                        { d: "泰國：曼谷蘇凡納布", p: "A320-200" }, { d: "泰國：普吉島", p: "A320-NEO" },
-                        { d: "越南：胡志明市", p: "A321-XLR" }, { d: "越南：峴港", p: "A320-200" }, { d: "越南：河內", p: "A320-200" }, { d: "越南：富國島", p: "A320-200" },
-                        { d: "馬來西亞：吉隆坡", p: "A320-200" }, { d: "馬來西亞：檳城", p: "A320-200" },
-                        { d: "新加坡", p: "A330-900neo" }, { d: "印尼：雅加達", p: "A330-900neo" }, { d: "印尼：巴厘島", p: "A320-200" },
-                        { d: "馬爾地夫：馬累", p: "A220-100" }, { d: "阿聯：杜拜 (暫停/借飛米蘭)", p: "A350-900" }
-                    ]},
-                    { region: "大洋洲", items: [
-                        { d: "帛琉", p: "A318-100" }, { d: "關島", p: "A330-900neo" },
-                        { d: "澳洲：雪梨", p: "A330-300" }, { d: "澳洲：墨爾本", p: "A350-900" },
-                        { d: "紐西蘭：奧克蘭", p: "A340-500" }, { d: "夏威夷：檀香山 (丹尼爾·K·井上)", p: "A350-900" }
-                    ]},
-                    { region: "非洲", items: [
-                        { d: "埃及：開羅", p: "A350-900" }, { d: "南非：約翰尼斯堡", p: "B777-9X" }
-                    ]},
-                    { region: "歐洲", items: [
-                        { d: "荷蘭：阿姆斯特丹史基浦", p: "A350-1000" }, { d: "英國：倫敦希斯洛 (賓士銀箭天穹彩繪機)", p: "B777-300ER" }, { d: "英國：利物浦 (經香港)", p: "DC-8-72" },
-                        { d: "法國：巴黎戴高樂", p: "A330-300" }, { d: "德國：慕尼黑", p: "A330-300" }, { d: "德國：法蘭克福", p: "A350-1000" },
-                        { d: "捷克：布拉格", p: "B787-9" }, { d: "波蘭：華沙蕭邦", p: "A350-900" }, { d: "芬蘭：赫爾辛基萬塔", p: "A350-900" },
-                        { d: "瑞典：斯德哥爾摩阿蘭達", p: "A350-900" }, { d: "冰島：雷克雅維克-凱夫拉維克", p: "B787-9" }, { d: "義大利：羅馬-菲烏米奇諾", p: "A350-900" }
-                    ]},
-                    { region: "美洲", items: [
-                        { d: "美國：波士頓", p: "A350-1000" }, { d: "美國：亞特蘭大", p: "B777-9X" }, { d: "美國：西雅圖塔科馬", p: "B777-300ER" },
-                        { d: "美國：舊金山 (經成田)", p: "A380-800" }, { d: "美國：洛杉磯", p: "A350-1000" }, { d: "美國：安克拉治", p: "A350-900" },
-                        { d: "美國：達拉斯沃斯堡 (藍色監獄塗裝)", p: "B777-9X" }, { d: "美國：休士頓喬治布希", p: "A350-900" },
-                        { d: "美國：費城 (足球小將翼塗裝)", p: "A350-900" }, { d: "加拿大：溫哥華", p: "B777-300ER" },
-                        { d: "加拿大：多倫多皮爾遜", p: "A350-1000" }, { d: "墨西哥：墨西哥城", p: "B787-8" }
-                    ]}
-                ]
-            },
-            rmq: {
-                title: "台中 (RMQ) 樞紐 - 全航點",
-                routes: [
-                    { region: "亞洲", items: [{ d: "日本：東京羽田", p: "A321-XLR" }] }
-                ]
-            },
-            bos: {
-                title: "波士頓 (BOS) 樞紐 - 全航點",
-                routes: [
-                    { region: "美洲", items: [
-                        { d: "美國：紐約紐華克", p: "A220-100" }, { d: "美國：邁阿密", p: "A220-300" }, { d: "美國：亞特蘭大", p: "A320-200" },
-                        { d: "美國：芝加哥歐海爾", p: "A220-300" }, { d: "美國：洛杉磯", p: "A320-200" }, { d: "美國：安克拉治", p: "A320-200" },
-                        { d: "加拿大：多倫多皮爾遜", p: "A220-100" }, { d: "阿魯巴", p: "A321-XLR" }
-                    ]},
-                    { region: "歐洲", items: [
-                        { d: "荷蘭：阿姆斯特丹史基浦", p: "A320-200" }, { d: "法國：巴黎戴高樂", p: "A330-900neo" }, { d: "德國：法蘭克福", p: "A321-XLR" },
-                        { d: "捷克：布拉格", p: "A321-XLR" }, { d: "芬蘭：赫爾辛基萬塔", p: "B737-800" }, { d: "瑞典：斯德哥爾摩阿蘭達", p: "A330-300" },
-                        { d: "冰島：雷克雅維克-凱夫拉維克", p: "A320-200" }, { d: "西班牙：馬德里", p: "A330-900neo" }
-                    ]},
-                    { region: "非洲 / 亞洲 / 大洋洲", items: [
-                        { d: "埃及：開羅 (經阿姆斯特丹)", p: "A330-300" }, { d: "南非：約翰尼斯堡", p: "B777-9X" }, { d: "衣索比亞：阿迪斯阿貝巴", p: "A350-900" },
-                        { d: "台灣：台北桃園", p: "A350-1000" }, { d: "日本：東京成田", p: "A350-1000" }, { d: "日本：關西", p: "B787-8" },
-                        { d: "泰國：曼谷蘇凡納
+    // 初始化載入
+    window.addEventListener('DOMContentLoaded', () => {
+        updateDestinations();
+        renderFarePlans();
+        filterHub('tpe');
+    });
+                                                                                    </script>
