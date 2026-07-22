@@ -4,38 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FORMO AIR 丰慕航空</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/color/180/airplane-take-off.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/color/96/airplane-take-off.png">
+    <meta name="robots" content="noindex, nofollow">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background: #070d19; color: #f8fafc; padding-bottom: 70px; }
-        
-        /* 隱藏 Radio 按鈕 */
-        input[type="radio"].nav-radio, input[type="radio"].hub-radio, input[type="radio"].modal-radio { display: none; }
-
-        /* 導覽列 */
         nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(7, 13, 25, 0.95); position: fixed; top: 0; width: 100%; z-index: 100; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.08); }
         .logo-text { font-size: 16px; font-weight: 900; letter-spacing: 1px; color: #ffffff; cursor: pointer; }
         .logo-text span { color: #d4af37; font-size: 12px; margin-left: 4px; }
         .nav-links { display: flex; gap: 4px; align-items: center; }
-        .nav-btn { background: transparent; color: #94a3b8; font-size: 12px; font-weight: 600; padding: 6px 8px; cursor: pointer; border-radius: 6px; display: inline-block; user-select: none; }
+        .nav-btn { background: transparent; border: none; color: #94a3b8; font-size: 12px; font-weight: 600; padding: 6px 8px; cursor: pointer; border-radius: 6px; }
+        .nav-btn.active { color: #38bdf8; background: rgba(56, 189, 248, 0.1); }
         .admin-btn { border: 1px solid #d4af37; color: #d4af37; padding: 4px 8px; border-radius: 14px; font-size: 11px; }
-
-        /* 純 CSS 頁面切換控制 */
-        #tab-home:checked ~ nav .nav-links label[for="tab-home"],
-        #tab-routes:checked ~ nav .nav-links label[for="tab-routes"],
-        #tab-service:checked ~ nav .nav-links label[for="tab-service"],
-        #tab-booking:checked ~ nav .nav-links label[for="tab-booking"] {
-            color: #38bdf8; background: rgba(56, 189, 248, 0.1);
-        }
-
         .page { display: none; margin-top: 60px; padding: 15px; animation: fadeIn 0.3s ease; }
-        #tab-home:checked ~ #page-home,
-        #tab-routes:checked ~ #page-routes,
-        #tab-service:checked ~ #page-service,
-        #tab-booking:checked ~ #page-booking { display: block; }
-
+        .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* UI 元件樣式 */
         .hero { background: linear-gradient(180deg, rgba(7, 13, 25, 0.4) 0%, #070d19 100%), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1000') center/cover; padding: 30px 15px; text-align: center; border-radius: 16px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .hero h1 { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 2px; }
         .hero p { color: #38bdf8; font-size: 12px; margin-top: 4px; }
@@ -44,75 +28,49 @@
         .livery-tag { display: inline-block; background: rgba(236, 72, 153, 0.15); color: #f472b6; font-size: 11px; padding: 2px 7px; border-radius: 10px; border: 1px solid rgba(236, 72, 153, 0.3); margin-top: 3px; }
         .livery-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
         .livery-silver { background: rgba(212, 175, 55, 0.15); color: #e2e8f0; border: 1px solid #d4af37; }
-
-        /* 航網純 CSS 樞紐選擇 */
         .hub-select-group { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
-        .hub-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 6px 12px; border-radius: 18px; font-size: 11px; white-space: nowrap; cursor: pointer; display: inline-block; }
-        
-        #hub-tpe:checked ~ #page-routes .hub-select-group label[for="hub-tpe"],
-        #hub-rmq:checked ~ #page-routes .hub-select-group label[for="hub-rmq"],
-        #hub-bos:checked ~ #page-routes .hub-select-group label[for="hub-bos"],
-        #hub-lax:checked ~ #page-routes .hub-select-group label[for="hub-lax"] {
-            background: #38bdf8; color: #070d19; font-weight: bold; border-color: #38bdf8;
-        }
-
-        .hub-panel { display: none; }
-        #hub-tpe:checked ~ #page-routes #panel-tpe,
-        #hub-rmq:checked ~ #page-routes #panel-rmq,
-        #hub-bos:checked ~ #page-routes #panel-bos,
-        #hub-lax:checked ~ #page-routes #panel-lax { display: block; }
-
+        .hub-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 6px 12px; border-radius: 18px; font-size: 11px; white-space: nowrap; cursor: pointer; }
+        .hub-btn.active { background: #38bdf8; color: #070d19; font-weight: bold; border-color: #38bdf8; }
         .route-region-title { font-weight: bold; font-size: 12px; color: #d4af37; margin: 12px 0 6px 0; padding-bottom: 3px; border-bottom: 1px dashed #334155; }
         .route-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #1e293b; font-size: 12px; }
         .route-item:last-child { border-bottom: none; }
         .route-dest { font-weight: 500; color: #f8fafc; }
         .route-plane { color: #38bdf8; font-family: monospace; font-size: 11px; background: rgba(56, 189, 248, 0.08); padding: 2px 5px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
-
-        /* 表單樣式 */
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 5px; }
         .form-group input, .form-group select { width: 100%; padding: 10px; background: #070d19; border: 1px solid #334155; color: #fff; border-radius: 8px; font-size: 12px; outline: none; }
-        .btn-primary { width: 100%; padding: 12px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; text-align: center; display: block; text-decoration: none; }
-
-        /* 純 CSS 彈窗控制 */
+        .pax-counter-group { background: #070d19; border: 1px solid #334155; border-radius: 8px; padding: 10px; }
+        .pax-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #1e293b; }
+        .pax-row:last-child { border-bottom: none; }
+        .pax-title { font-size: 12px; color: #f8fafc; }
+        .pax-desc { font-size: 10px; color: #64748b; }
+        .counter-btn-group { display: flex; align-items: center; gap: 8px; }
+        .btn-counter { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.1); color: #38bdf8; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .pax-num { font-size: 13px; font-weight: bold; width: 16px; text-align: center; color: #fff; }
+        .plan-card { background: #070d19; border: 1px solid #334155; border-radius: 10px; padding: 12px; margin-top: 8px; }
+        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .plan-name { font-weight: bold; color: #d4af37; font-size: 13px; }
+        .plan-tag { font-size: 10px; background: #1e293b; color: #94a3b8; padding: 2px 6px; border-radius: 4px; }
+        .plan-detail { font-size: 11px; color: #94a3b8; line-height: 1.5; }
+        .plan-detail li { margin-left: 14px; margin-bottom: 2px; }
+        .btn-primary { width: 100%; padding: 12px; background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 13, 25, 0.95); z-index: 200; justify-content: center; align-items: center; }
-        #modal-admin:checked ~ #adminModal { display: flex; }
-        #modal-dashboard:checked ~ #dashboardModal { display: flex; }
         .modal-content { background: #0f172a; padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; border: 1px solid #1e293b; max-height: 85vh; overflow-y: auto; }
     </style>
 </head>
 <body>
-
-    <!-- 頁面 Radio 切換開關 -->
-    <input type="radio" name="nav" id="tab-home" class="nav-radio" checked>
-    <input type="radio" name="nav" id="tab-routes" class="nav-radio">
-    <input type="radio" name="nav" id="tab-service" class="nav-radio">
-    <input type="radio" name="nav" id="tab-booking" class="nav-radio">
-
-    <!-- 航網樞紐 Radio 切換開關 -->
-    <input type="radio" name="hub" id="hub-tpe" class="hub-radio" checked>
-    <input type="radio" name="hub" id="hub-rmq" class="hub-radio">
-    <input type="radio" name="hub" id="hub-bos" class="hub-radio">
-    <input type="radio" name="hub" id="hub-lax" class="hub-radio">
-
-    <!-- 彈窗 Radio 開關 -->
-    <input type="checkbox" id="modal-admin" class="modal-radio">
-    <input type="checkbox" id="modal-dashboard" class="modal-radio">
-
-    <!-- 頂部導覽列 -->
     <nav>
-        <label for="tab-home" class="logo-text">FORMO AIR <span>丰慕航空</span></label>
+        <div class="logo-text" id="logo-btn">FORMO AIR <span>丰慕航空</span></div>
         <div class="nav-links">
-            <label for="tab-home" class="nav-btn">首頁</label>
-            <label for="tab-routes" class="nav-btn">航網</label>
-            <label for="tab-service" class="nav-btn">服務</label>
-            <label for="tab-booking" class="nav-btn">訂票</label>
-            <label for="modal-admin" class="nav-btn admin-btn">內部</label>
+            <button class="nav-btn active" id="btn-home">首頁</button>
+            <button class="nav-btn" id="btn-routes">航網</button>
+            <button class="nav-btn" id="btn-service">服務</button>
+            <button class="nav-btn" id="btn-booking">訂票</button>
+            <button class="nav-btn admin-btn" id="btn-admin">內部</button>
         </div>
     </nav>
 
-    <!-- 1. 首頁 -->
-    <div id="page-home" class="page">
+    <div id="page-home" class="page active">
         <div class="hero">
             <h1>FORMO AIR</h1>
             <p>丰慕航空 ‧ 探索全球無限航點</p>
@@ -140,123 +98,203 @@
                 <span class="livery-tag livery-blue">A350-900 足球小將翼主題塗裝</span>
             </div>
         </div>
-        <label for="tab-routes" style="display:block; text-decoration:none;">
-            <div class="card" style="cursor:pointer; background: linear-gradient(135deg, #0f172a, #1e293b);">
-                <h3 style="color:#d4af37;">🌐 完整全球航網圖鑑</h3>
-                <p style="font-size:11px; color:#94a3b8;">點擊查看 TPE、RMQ、BOS、LAX 四大樞紐航線 ➔</p>
-            </div>
-        </label>
+        <div class="card" id="card-routes-link" style="cursor:pointer; background: linear-gradient(135deg, #0f172a, #1e293b);">
+            <h3 style="color:#d4af37;">🌐 完整全球航網圖鑑</h3>
+            <p style="font-size:11px; color:#94a3b8;">點擊查看 TPE、RMQ、BOS、LAX 四大樞紐航線 ➔</p>
+        </div>
     </div>
 
-    <!-- 2. 航網頁面 -->
     <div id="page-routes" class="page">
         <h2 style="font-size:16px; margin-bottom: 10px; color:#38bdf8;">全球基地航網與機隊配置</h2>
         <div class="hub-select-group">
-            <label for="hub-tpe" class="hub-btn">台北桃園 (TPE)</label>
-            <label for="hub-rmq" class="hub-btn">台中 (RMQ)</label>
-            <label for="hub-bos" class="hub-btn">波士頓 (BOS)</label>
-            <label for="hub-lax" class="hub-btn">洛杉磯 (LAX)</label>
+            <button class="hub-btn active" data-hub="tpe">台北桃園 (TPE)</button>
+            <button class="hub-btn" data-hub="rmq">台中 (RMQ)</button>
+            <button class="hub-btn" data-hub="bos">波士頓 (BOS)</button>
+            <button class="hub-btn" data-hub="lax">洛杉磯 (LAX)</button>
         </div>
-
-        <div class="card">
-            <!-- TPE 航點 -->
-            <div id="panel-tpe" class="hub-panel">
-                <h3 style="color:#d4af37; margin-bottom:8px;">台北桃園 (TPE) 樞紐 - 全航點</h3>
-                <div class="route-region-title">亞洲 - 東亞</div>
-                <div class="route-item"><span class="route-dest">日本：東京羽田 (酷洛米午夜惡作劇)</span><span class="route-plane">A321-XLR</span></div>
-                <div class="route-item"><span class="route-dest">日本：關西 (酷洛米20週年星空姊妹號)</span><span class="route-plane">A330-300</span></div>
-                <div class="route-item"><span class="route-dest">日本：東京成田</span><span class="route-plane">A330-300</span></div>
-                <div class="route-item"><span class="route-dest">韓國：首爾仁川</span><span class="route-plane">A321-200</span></div>
-                <div class="route-region-title">歐洲 / 美洲</div>
-                <div class="route-item"><span class="route-dest">英國：倫敦希斯洛 (賓士銀箭天穹)</span><span class="route-plane">B777-300ER</span></div>
-                <div class="route-item"><span class="route-dest">美國：達拉斯沃斯堡 (藍色監獄)</span><span class="route-plane">B777-9X</span></div>
-                <div class="route-item"><span class="route-dest">美國：費城 (足球小將翼)</span><span class="route-plane">A350-900</span></div>
-            </div>
-
-            <!-- RMQ 航點 -->
-            <div id="panel-rmq" class="hub-panel">
-                <h3 style="color:#d4af37; margin-bottom:8px;">台中 (RMQ) 樞紐 - 全航點</h3>
-                <div class="route-region-title">亞洲</div>
-                <div class="route-item"><span class="route-dest">日本：東京羽田</span><span class="route-plane">A321-XLR</span></div>
-            </div>
-
-            <!-- BOS 航點 -->
-            <div id="panel-bos" class="hub-panel">
-                <h3 style="color:#d4af37; margin-bottom:8px;">波士頓 (BOS) 樞紐 - 全航點</h3>
-                <div class="route-region-title">美洲 / 歐洲</div>
-                <div class="route-item"><span class="route-dest">美國：紐約紐華克</span><span class="route-plane">A220-100</span></div>
-                <div class="route-item"><span class="route-dest">法國：巴黎戴高樂</span><span class="route-plane">A330-900neo</span></div>
-            </div>
-
-            <!-- LAX 航點 -->
-            <div id="panel-lax" class="hub-panel">
-                <h3 style="color:#d4af37; margin-bottom:8px;">洛杉磯 (LAX) 樞紐 - 全航點</h3>
-                <div class="route-region-title">全球航線</div>
-                <div class="route-item"><span class="route-dest">台灣：台北桃園</span><span class="route-plane">A350-1000</span></div>
-                <div class="route-item"><span class="route-dest">英國：倫敦希斯洛</span><span class="route-plane">A380-800</span></div>
-            </div>
-        </div>
+        <div id="hub-content" class="card"></div>
     </div>
 
-    <!-- 3. 服務頁面 -->
     <div id="page-service" class="page">
         <div class="card">
             <h3 style="color:#d4af37;">🚗 門到門專車禮賓接送</h3>
-            <p style="font-size:11px; color:#94a3b8; margin-bottom:10px;">於 TPE、LAX、BOS 三大樞紐提供頂級陸地接送服務。</p>
+            <p style="font-size:11px; color:#94a3b8; margin-bottom:10px;">於 台北桃園 (TPE)、洛杉磯 (LAX)、波士頓 (BOS) 三大樞紐提供頂級陸地接送服務：</p>
+            <div style="font-size:12px; color:#cbd5e1; line-height:1.6;">
+                • <strong>頭等艙禮賓接送：</strong> 全球雙向配備 Mercedes-Maybach S-Class 頂級旗艦轎車。<br>
+                • <strong>商務艙專車接送：</strong> 精品商務方案享有單程 Mercedes-Benz V-Class / S-Class 禮賓車接送服務。
+            </div>
         </div>
         <div class="card">
             <h3>🍸 丰慕機場尊榮貴賓室</h3>
-            <p style="font-size:12px; color:#cbd5e1;">提供一對一專員服務、頂級獨立包廂與米其林星級佳餚。</p>
+            <div style="font-size:12px; color:#cbd5e1; line-height:1.6;">
+                • <strong>頭等艙專屬貴賓室：</strong> 提供一對一專員服務、頂級獨立包廂、米其林星級主廚即點即做佳餚與停機坪 Maybach 直達接送。<br>
+                • <strong>商務艙及高等會員貴賓室：</strong> 設有全音響調音休息區、淋浴間、現做單點美食酒吧與頂級 Spa 設施。<br>
+                • <strong>一般旅客休息室：</strong> 提供舒適休憩沙發區、高速 Wi-Fi、精緻冷熱自助餐點與飲料無限供應。
+            </div>
         </div>
     </div>
 
-    <!-- 4. 訂票頁面 -->
     <div id="page-booking" class="page">
         <div class="card">
             <h2 style="font-size:16px; margin-bottom: 12px; color:#38bdf8; text-align:center;">預訂你的 丰慕航空 航班</h2>
             <div class="form-group">
                 <label>出發地樞紐</label>
-                <select>
-                    <option>台北桃園 (TPE)</option>
-                    <option>台中 (RMQ)</option>
-                    <option>波士頓 (BOS)</option>
-                    <option>洛杉磯 (LAX)</option>
+                <select id="book-origin">
+                    <option value="TPE">台北桃園 (TPE)</option>
+                    <option value="RMQ">台中 (RMQ)</option>
+                    <option value="BOS">波士頓 (BOS)</option>
+                    <option value="LAX">洛杉磯 (LAX)</option>
                 </select>
             </div>
             <div class="form-group">
+                <label>目的地 (顯示執飛機型)</label>
+                <select id="book-dest"></select>
+            </div>
+            <div class="form-group">
+                <label>搭乘人數</label>
+                <div class="pax-counter-group">
+                    <div class="pax-row">
+                        <div>
+                            <div class="pax-title">成人</div>
+                            <div class="pax-desc">12 歲及以上</div>
+                        </div>
+                        <div class="counter-btn-group">
+                            <button class="btn-counter" id="pax-adult-minus">-</button>
+                            <span class="pax-num" id="num-adult">1</span>
+                            <button class="btn-counter" id="pax-adult-plus">+</button>
+                        </div>
+                    </div>
+                    <div class="pax-row">
+                        <div>
+                            <div class="pax-title">兒童</div>
+                            <div class="pax-desc">3 - 12 歲</div>
+                        </div>
+                        <div class="counter-btn-group">
+                            <button class="btn-counter" id="pax-child-minus">-</button>
+                            <span class="pax-num" id="num-child">0</span>
+                            <button class="btn-counter" id="pax-child-plus">+</button>
+                        </div>
+                    </div>
+                    <div class="pax-row">
+                        <div>
+                            <div class="pax-title">嬰兒</div>
+                            <div class="pax-desc">0 - 3 歲</div>
+                        </div>
+                        <div class="counter-btn-group">
+                            <button class="btn-counter" id="pax-infant-minus">-</button>
+                            <span class="pax-num" id="num-infant">0</span>
+                            <button class="btn-counter" id="pax-infant-plus">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label>搭乘艙等</label>
-                <select>
-                    <option>經濟艙 (Economy Class)</option>
-                    <option>商務艙 (Business Class)</option>
-                    <option>頭等艙 (First Class)</option>
+                <select id="book-cabin">
+                    <option value="economy">經濟艙 (Economy Class)</option>
+                    <option value="business">商務艙 (Business Class)</option>
+                    <option value="first">頭等艙 (First Class)</option>
                 </select>
             </div>
-            <button class="btn-primary" onclick="alert('預約提交成功！FORMO AIR 期待為您服務。')">確認預約航班</button>
+            <div class="form-group">
+                <label>選擇購票方案</label>
+                <div id="fare-plans-container"></div>
+            </div>
+            <button class="btn-primary" id="btn-confirm-booking">確認預約航班</button>
         </div>
     </div>
 
-    <!-- 內部控制台 Modal -->
     <div class="modal" id="adminModal">
         <div class="modal-content" style="text-align: center;">
             <h3 style="margin-bottom: 12px; color:#38bdf8;">FORMO AIR 控制台驗證</h3>
-            <input type="password" placeholder="輸入密碼" style="width:100%; padding:10px; margin-bottom:12px; background:#070d19; border:1px solid #334155; color:#fff; border-radius:8px; text-align:center;">
-            <label for="modal-dashboard" for-close="modal-admin" class="btn-primary" style="cursor:pointer;" onclick="document.getElementById('modal-admin').checked=false;">進入控制面板</label>
-            <label for="modal-admin" style="display:block; padding:8px; color:#94a3b8; margin-top:8px; cursor:pointer;">取消</label>
+            <input type="password" id="adminPass" placeholder="輸入密碼" style="width:100%; padding:10px; margin-bottom:12px; background:#070d19; border:1px solid #334155; color:#fff; border-radius:8px; text-align:center;">
+            <button class="btn-primary" id="btn-login-admin">進入控制面板</button>
+            <button id="btn-close-admin" style="width:100%; padding:8px; background:transparent; border:none; color:#94a3b8; margin-top:8px; cursor:pointer;">取消</button>
         </div>
     </div>
 
-    <!-- 營運面板 Modal -->
     <div class="modal" id="dashboardModal">
         <div class="modal-content">
-            <h3 style="color:#d4af37; margin-bottom: 10px;">FORMO AIR 機隊狀態</h3>
+            <h3 style="color:#d4af37; margin-bottom: 10px;">FORMO AIR 機隊與營運狀態</h3>
             <div style="font-size:12px; color:#cbd5e1; line-height:1.6; background:#070d19; padding:12px; border-radius:8px; margin-bottom:12px;">
-                ⚠️ <strong>特殊航線調度：</strong><br>
-                • 杜拜 ➔ 台北桃園：暫時停航，借飛米蘭。<br>
-                • 杜拜 ➔ 波士頓：暫時停航，借飛倫敦。
+                ⚠️ <strong>特殊航線調度狀態：</strong><br>
+                • 杜拜 ➔ 台北桃園（A350-900）：暫時停航，機隊借飛米蘭。<br>
+                • 杜拜 ➔ 波士頓（B777-300ER）：暫時停航，機隊借飛倫敦。
             </div>
-            <label for="modal-dashboard" class="btn-primary" style="background:#334155; cursor:pointer;">關閉面板</label>
+            <button id="btn-close-dashboard" class="btn-primary" style="background:#334155;">關閉面板</button>
         </div>
     </div>
 
-</body>
-                </html>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const PASSWORD = "formo2026";
+            let paxCount = { adult: 1, child: 0, infant: 0 };
+            let selectedPlan = "";
+
+            const routesData = {
+                tpe: {
+                    title: "台北桃園 (TPE) 樞紐 - 全航點",
+                    routes: [
+                        { region: "亞洲 - 東亞", items: [
+                            { d: "中國：上海浦東", p: "B737-100" }, { d: "中國：北京首都", p: "B737-100" }, { d: "中國：南京", p: "B737-100" },
+                            { d: "香港", p: "A321-XLR" }, { d: "澳門", p: "A321-XLR" },
+                            { d: "韓國：首爾仁川", p: "A321-200" }, { d: "韓國：釜山金海", p: "A321-XLR" }, { d: "韓國：濟州", p: "A318-100" },
+                            { d: "日本：東京成田", p: "A330-300" }, { d: "日本：東京羽田 (酷洛米午夜惡作劇)", p: "A321-XLR" },
+                            { d: "日本：名古屋中部", p: "A330-300" }, { d: "日本：關西 (酷洛米20週年星空姊妹號)", p: "A330-300" },
+                            { d: "日本：札幌新千歲", p: "A350-900" }, { d: "日本：函館", p: "A320-200" }, { d: "日本：福岡", p: "A320-200" },
+                            { d: "日本：鹿兒島", p: "A320-200" }, { d: "日本：松山", p: "A321-200" }, { d: "日本：沖繩那霸", p: "A320-200" }
+                        ]},
+                        { region: "亞洲 - 東南亞 / 南亞 / 中東", items: [
+                            { d: "菲律賓：馬尼拉", p: "A321-XLR" }, { d: "菲律賓：宿霧", p: "A321-XLR" },
+                            { d: "泰國：曼谷蘇凡納布", p: "A320-200" }, { d: "泰國：普吉島", p: "A320-NEO" },
+                            { d: "越南：胡志明市", p: "A321-XLR" }, { d: "越南：峴港", p: "A320-200" }, { d: "越南：河內", p: "A320-200" }, { d: "越南：富國島", p: "A320-200" },
+                            { d: "馬來西亞：吉隆坡", p: "A320-200" }, { d: "馬來西亞：檳城", p: "A320-200" },
+                            { d: "新加坡", p: "A330-900neo" }, { d: "印尼：雅加達", p: "A330-900neo" }, { d: "印尼：巴厘島", p: "A320-200" },
+                            { d: "馬爾地夫：馬累", p: "A220-100" }, { d: "阿聯：杜拜 (暫停/借飛米蘭)", p: "A350-900" }
+                        ]},
+                        { region: "大洋洲", items: [
+                            { d: "帛琉", p: "A318-100" }, { d: "關島", p: "A330-900neo" },
+                            { d: "澳洲：雪梨", p: "A330-300" }, { d: "澳洲：墨爾本", p: "A350-900" },
+                            { d: "紐西蘭：奧克蘭", p: "A340-500" }, { d: "夏威夷：檀香山 (丹尼爾·K·井上)", p: "A350-900" }
+                        ]},
+                        { region: "非洲", items: [
+                            { d: "埃及：開羅", p: "A350-900" }, { d: "南非：約翰尼斯堡", p: "B777-9X" }
+                        ]},
+                        { region: "歐洲", items: [
+                            { d: "荷蘭：阿姆斯特丹史基浦", p: "A350-1000" }, { d: "英國：倫敦希斯洛 (賓士銀箭天穹彩繪機)", p: "B777-300ER" }, { d: "英國：利物浦 (經香港)", p: "DC-8-72" },
+                            { d: "法國：巴黎戴高樂", p: "A330-300" }, { d: "德國：慕尼黑", p: "A330-300" }, { d: "德國：法蘭克福", p: "A350-1000" },
+                            { d: "捷克：布拉格", p: "B787-9" }, { d: "波蘭：華沙蕭邦", p: "A350-900" }, { d: "芬蘭：赫爾辛基萬塔", p: "A350-900" },
+                            { d: "瑞典：斯德哥爾摩阿蘭達", p: "A350-900" }, { d: "冰島：雷克雅維克-凱夫拉維克", p: "B787-9" }, { d: "義大利：羅馬-菲烏米奇諾", p: "A350-900" }
+                        ]},
+                        { region: "美洲", items: [
+                            { d: "美國：波士頓", p: "A350-1000" }, { d: "美國：亞特蘭大", p: "B777-9X" }, { d: "美國：西雅圖塔科馬", p: "B777-300ER" },
+                            { d: "美國：舊金山 (經成田)", p: "A380-800" }, { d: "美國：洛杉磯", p: "A350-1000" }, { d: "美國：安克拉治", p: "A350-900" },
+                            { d: "美國：達拉斯沃斯堡 (藍色監獄塗裝)", p: "B777-9X" }, { d: "美國：休士頓喬治布希", p: "A350-900" },
+                            { d: "美國：費城 (足球小將翼塗裝)", p: "A350-900" }, { d: "加拿大：溫哥華", p: "B777-300ER" },
+                            { d: "加拿大：多倫多皮爾遜", p: "A350-1000" }, { d: "墨西哥：墨西哥城", p: "B787-8" }
+                        ]}
+                    ]
+                },
+                rmq: {
+                    title: "台中 (RMQ) 樞紐 - 全航點",
+                    routes: [
+                        { region: "亞洲", items: [{ d: "日本：東京羽田", p: "A321-XLR" }] }
+                    ]
+                },
+                bos: {
+                    title: "波士頓 (BOS) 樞紐 - 全航點",
+                    routes: [
+                        { region: "美洲", items: [
+                            { d: "美國：紐約紐華克", p: "A220-100" }, { d: "美國：邁阿密", p: "A220-300" }, { d: "美國：亞特蘭大", p: "A320-200" },
+                            { d: "美國：芝加哥歐海爾", p: "A220-300" }, { d: "美國：洛杉磯", p: "A320-200" }, { d: "美國：安克拉治", p: "A320-200" },
+                            { d: "加拿大：多倫多皮爾遜", p: "A220-100" }, { d: "阿魯巴", p: "A321-XLR" }
+                        ]},
+                        { region: "歐洲", items: [
+                            { d: "荷蘭：阿姆斯特丹史基浦", p: "A320-200" }, { d: "法國：巴黎戴高樂", p: "A330-900neo" }, { d: "德國：法蘭克福", p: "A321-XLR" },
+                            { d: "捷克：布拉格", p: "A321-XLR" }, { d: "芬蘭：赫爾辛基萬塔", p: "B737-800" }, { d: "瑞典：斯德哥爾摩阿蘭達", p: "A330-300" },
+                            { d: "冰島：雷克雅維克-凱夫拉維克", p: "A320-200" }, { d: "西班牙：馬德里", p: "A330-900neo" }
+                        ]},
+                        { region: "非洲 / 亞洲 / 大洋洲", items: [
+                            { d: "埃及：開羅 (經阿姆斯特丹)", p: "A330-300" }, { d: "南非：約翰尼斯堡", p: "B777-9X" }, { d: "衣索比亞：阿迪斯阿貝巴", p: "A350-900" },
+                            { d: "台灣：台北桃園", p: "A350-1000" }, { d: "日本：東京成田", p: "A350-1000" }, { d: "日本：關西", p: "B787-8" },
+                            { d: "泰國：曼谷蘇凡納布 (經阿
